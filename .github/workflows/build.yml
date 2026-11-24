@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dir: elm-0.19.0
+            elm: 0.19.0-no-deps
+          - dir: elm-0.19.1
+            elm: 0.19.1-6
+          - dir: elm-0.19.2
+            elm: 0.19.2-0
+          - dir: elm-0.19.3
+            elm: 0.19.3-0
+    name: ${{ matrix.dir }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npx --yes elm@${{ matrix.elm }} make src/Main.elm --output=/dev/null
